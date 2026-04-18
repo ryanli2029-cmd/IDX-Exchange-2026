@@ -1,16 +1,16 @@
 import pandas as pd
 import numpy as np
 
-sold = pd.read_csv('Combined_CRMLSSold_Residential.csv', low_memory=False)
-listings = pd.read_csv('Combined_CRMLSListing_Residential.csv', low_memory=False)
-
-#make sure the listing types are residential
-sold = sold[sold['PropertyType'] == 'Residential']
-listings = listings[listings['PropertyType'] == 'Residential']
+sold = pd.read_csv('Combined_CRMLSSold.csv', low_memory=False)
+listings = pd.read_csv('Combined_CRMLSListing.csv', low_memory=False)
 
 #prints out the unique property types
 print("\n Unique Property Types found: ")
 print(sold['PropertyType'].unique())
+
+#make sure the listing types are residential
+sold = sold[sold['PropertyType'] == 'Residential']
+listings = listings[listings['PropertyType'] == 'Residential']
 
 #sold = sold.replace(r'^\s*$', np.nan, regex=True)
 sold = sold.replace(['None', 'null', 'NULL', 'NaN'], np.nan)
@@ -36,7 +36,9 @@ numeric_cols = ['ClosePrice', 'LivingArea', 'DaysOnMarket']
 filtered = sold[numeric_cols]
 print(filtered.describe())
 
-#part 2 of deliverable (enrichment)
+#part 2 of deliverable
+print("\nPart 2 of deliverable (enrichment)")
+
 url = "https://fred.stlouisfed.org/graph/fredgraph.csv?id=MORTGAGE30US"
 mortgage = pd.read_csv(url, parse_dates=['observation_date'])
 mortgage.columns = ['date', 'rate_30yr_fixed']
@@ -54,7 +56,7 @@ print("\nNull mortgage rates in Sold dataset:", sold_with_rates['rate_30yr_fixed
 print("\nNull mortgage rates in Listings dataset:", listings_with_rates['rate_30yr_fixed'].isnull().sum())
 sold_with_rates.to_csv('Combined_CRMLSSold_Residential_Enriched.csv', index=False)
 listings_with_rates.to_csv('Combined_CRMLSListing_Residential_Enriched.csv', index=False)
-print("\Sold and Listings Enriched CSV Files Saved Successfully")
+print("\nSold and Listings Enriched CSV Files Saved Successfully")
 
 print("\nSold Dataset Preview")
 # Previewing the sold data using CloseDate
